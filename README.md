@@ -34,37 +34,27 @@ Reboot:
 
 ## Install software
 
-Install pre-requisites for Tensorflow.
+Install pre-requisites:
 
-    sudo apt install libatlas-base-dev
-
-Install tensorflow.
-
-    pip3 install tensorflow
-
-Install keras.
-
-    pip3 install keras
-
-Test your installation by running the following without errors:
-
-    python3 -c "import tensorflow as tf;import keras"
-
+    sudo apt install libatlas-base-dev libjasper-dev libqtgui4 libqt4-test libhdf5-dev
+	
 Make sure you enable your camera through `sudo raspi-config`. Reboot again afterwards.
 
-## Working with this library
-
-Clone this library.
+Clone this library:
 
     git clone https://github.com/ml4a/ml4pi
 
-Try running the interactive trainer.
+Install all the required python libraries:
+
+	cd ml4pi
+	pip3 install -r requirements.txt 
+
+Try running the interactive trainer:
+
+	python3 train_webcam.py
 
 
-
-
-
-### Sample dataset
+## Training a dataset from a folder of images
 
 Example is using a dataset which can be obtained:
 

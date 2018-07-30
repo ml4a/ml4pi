@@ -1,0 +1,7 @@
+tensorflow
+keras
+opencv-python
+Pillow
+sklearn
+h5py
+picamera[array]
