@@ -1,8 +1,9 @@
-# Resurces
+import time
 import numpy as np
 import cv2
+import picamera
+import picamera.array
 from PIL import Image
-
 import keras
 from keras import backend as K
 from keras.layers.core import Dense
@@ -53,35 +54,44 @@ def prepare_frame(frame):
 
 def addExample(example, label): # add examples to training data set
     encoded_y = keras.utils.np_utils.to_categorical(label,num_classes=NUM_CLASSES) # make one-hot
-    TRAINING_LABELS.append(encoded_y[0])
+    TRAINING_LABELS.append(encoded_y)
     TRAINING_DATA.append(example[0])
     print('add example for label %d'%label)
 
-video = cv2.VideoCapture(0) # start webcam
+ 
+# load the model
 model = loadModel()
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-        
-while True:
 
-    _, frame = video.read() # read frame from camera
-    cv2.imshow("Capturing", frame)
-    key=cv2.waitKey(1)
+# start camera
+with picamera.PiCamera() as camera:
+     with picamera.array.PiRGBArray(camera) as output:
+        while True:
+            camera.capture(output, 'rgb')
+            print('Captured %dx%d image' % (output.array.shape[1], output.array.shape[0]))
 
-    if key == ord('1'): # add example in class 0
-        addExample(prepare_frame(frame), 0)
+            frame = output.array
 
-    if key == ord('2'): # add example in class 1
-        addExample(prepare_frame(frame), 1)
+            cv2.imshow('capturing',frame)
+            key=cv2.waitKey(1)
 
-    if key == ord('t'): # train
-        model.fit(np.array(TRAINING_DATA), np.array(TRAINING_LABELS), epochs=EPOCHS, batch_size=16)
+            if key == ord('1'): # add example in class 0
+                addExample(prepare_frame(frame), 0)
 
-    if key == ord('p'): # predict
-        processed_image = prepare_frame(frame) # prepare frame
-        prediction = model.predict(processed_image)
-        result = np.argmax(prediction) #imagenet_utils.decode_predictions(prediction)
-        print('predict %d'%result)
+            if key == ord('2'): # add example in class 1
+                addExample(prepare_frame(frame), 1)
 
-    if key == ord('q'): # quit
-        break
+            if key == ord('t'): # train
+                model.fit(np.array(TRAINING_DATA), np.array(TRAINING_LABELS), epochs=EPOCHS, batch_size=8)
+
+            if key == ord('p'): # predict
+                processed_image = prepare_frame(frame) # prepare frame
+                prediction = model.predict(processed_image)
+                result = np.argmax(prediction) #imagenet_utils.decode_predictions(prediction)
+                print('predict %d'%result)
+
+            if key == ord('q'): # quit
+                break
+
+            output.truncate(0)
 
