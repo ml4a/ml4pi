@@ -1,9 +1,18 @@
+# ml4pi
+
+A tiny framework for doing machine learning on Raspberry Pi.
+
+
 ## Setup the Pi
 
 Download the latest version of Raspbian and flash your micro SD card with [Etcher](https://etcher.io/)
 
 Add blank file called `ssh` into the root of the SD disk and a file called `wpa_supplicant.conf` containing the following (replace with your wifi details):
 
+
+    ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+    update_config=1
+    
     network={
         ssid="YOUR_WIFI_NETWORK"
         psk="YOUR_WIFI_PASSWORD"
@@ -32,6 +41,7 @@ Reboot:
 
     sudo reboot
 
+
 ## Install software
 
 Install pre-requisites:
@@ -54,7 +64,17 @@ Try running the interactive trainer:
 	python3 train_webcam.py
 
 
+## Todo
+
+ - [get picamera at faster fps](https://www.pyimagesearch.com/2015/12/28/increasing-raspberry-pi-fps-with-python-and-opencv/)
+ - train from a directory of images
+ - saving/loading models
+ - deployment script (load model, then continuously predict samples)
+
+
 ## Training a dataset from a folder of images
+
+(not finished yet)
 
 Example is using a dataset which can be obtained:
 
